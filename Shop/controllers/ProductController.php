@@ -2,8 +2,8 @@
 namespace controllers;
 
 use config\Database;
-use Exception;
 use models\Product;
+
 require_once __DIR__ . '/../models/Product.php';
 
 class ProductController {
@@ -16,11 +16,12 @@ class ProductController {
         $this->product = new Product($this->database);
     }
 
-    public function create(): bool {
+    public function create()
+    {
         $this->product->name = $_POST['name'] ?? '';
         $this->product->price = $_POST['price'] ?? 0;
         $this->product->category = $_POST['category'] ?? '';
-        $this->product->stock = isset($_POST['stock']);
+        $this->product->stock = isset($_POST['stock']) ? 1 : 0;
 
         $imagePath = "../images/default.jpg";
         if (isset($_FILES["Image"]) && $_FILES["Image"]["error"] == 0) {
@@ -31,16 +32,12 @@ class ProductController {
             }
         }
         $this->product->image = $imagePath;
-
-        $result = $this->product->create();
-        if ($result) {
-            header("Location: ../index.php");
-            exit;
-        }
-        return $result;
+        $this->product->create();
+        header("Location: ../public/index.php?action=index");
     }
 
-    public function read() {
+    public function read(): array
+    {
         return $this->product->read();
     }
 
@@ -49,10 +46,14 @@ class ProductController {
     }
 
     public function update($id): void {
+
         $this->product->name = $_POST['name'] ?? '';
         $this->product->price = $_POST['price'] ?? 0;
         $this->product->category = $_POST['category'] ?? '';
-        $this->product->stock = isset($_POST['stock']);
+        $this->product->stock = isset($_POST['stock']) ? 1 : 0;
+
+        $existingProduct = $this->product->readSingle($id);
+        $this->product->image = $existingProduct['image'] ?? "../images/default.jpg";
 
         if (isset($_FILES["Image"]) && $_FILES["Image"]["error"] == 0) {
             $target_dir = "../images/";
@@ -61,7 +62,6 @@ class ProductController {
                 $this->product->image = $target_file;
             }
         }
-
         $data = [
             ':id' => $id,
             ':name' => $this->product->name,
@@ -70,23 +70,21 @@ class ProductController {
             ':stock' => $this->product->stock,
             ':image' => $this->product->image
         ];
-
         $this->product->update($data);
-        header("Location: index.php");
-        exit;
+        header("Location: ../public/index.php?action=index");
     }
 
-    public function delete($id): bool {
-        try {
-            $result = $this->product->delete($id);
-            if ($result) {
-                header("Location: index.php");
-                exit;
-            }
-            return $result;
-        } catch (Exception $e) {
-            error_log("Erreur lors de la suppression: " . $e->getMessage());
-            return false;
-        }
+    public function delete($id): void
+    {
+        $this->product->delete($id);
+        header("Location: ../public/index.php?action=index");
+    }
+
+    public function api_get_products(): void
+    {
+        header('Content-Type: application/json');
+        $stmt = $this->product->read();
+        echo json_encode($stmt);
+        exit;
     }
 }

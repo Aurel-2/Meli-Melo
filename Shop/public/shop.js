@@ -1,5 +1,13 @@
+let catalog = []
+
 async function init() {
     try {
+        const response = await fetch('../public/index.php?action=api-get');
+        if (!response.ok) {
+            throw new Error('Erreur lors du chargement du fichier JSON');
+        }
+        catalog = await response.json();
+
         let form = document.querySelector('form');
         let errorDiv = document.createElement('div');
         errorDiv.style.color = 'red';
@@ -15,12 +23,21 @@ async function init() {
             }
         });
 
+        form.addEventListener('submit', async (event) => {
+            const response = await fetch('../public/index.php?action=api-get');
+            if (!response.ok) {
+                throw new Error('Erreur lors du chargement du fichier JSON');
+            }
+            catalog = await response.json();
+        });
         displayItem(catalog);
         updateFilter();
+        totalPrice();
     } catch (error) {
         console.error('Erreur lors de l\'initialisation :', error);
     }
 }
+
 
 function updateFilter() {
     let filter = document.getElementById("cat-filter");
@@ -34,9 +51,10 @@ function updateFilter() {
     });
 }
 
+
 function filterProducts() {
     let s_category = document.getElementById("cat-filter").value;
-    let f_products = s_category === "all" ? catalog : catalog.filter((item) => item.category === s_category);
+    let f_products = s_category == "all" ? catalog : catalog.filter((item) => item.category === s_category);
     displayItem(f_products);
 }
 
@@ -65,15 +83,17 @@ function applyDiscount() {
     let f_products = s_category === "all" ? catalog : catalog.filter((item) => item.category === s_category);
     let n_products = f_products.map(p => ({...p, price: p.price - (p.price * 0.1)}));
     displayItem(n_products);
+
 }
 
 function resetDisplay() {
     let s_category = document.getElementById("cat-filter").value;
-    let f_products = s_category === "all" ? catalog : catalog.filter((item) => item.category === s_category);
-    displayItem(f_products);
+    let f_products = s_category === "all" ? catalog : catalog.filter((item) => item.category == s_category);
+    displayItem(f_products)
 }
 
 function displayItem(iterable) {
+
     let productGrid = document.getElementById('product-grid');
     productGrid.innerHTML = '';
     if (!iterable || !Array.isArray(iterable)) {
@@ -81,18 +101,23 @@ function displayItem(iterable) {
         return;
     }
     iterable.forEach((product) => {
+        console.log("product.price:", product.price, "Type:", typeof product.price);
         let productCard = document.createElement('div');
         productCard.classList.add('product-card');
 
         let productImage = document.createElement('img');
+        productImage.src = product.image;
+        productImage.alt = product.name;
         productImage.src = product.image || '../images/default.jpg';
         productImage.alt = product.name || 'Produit sans nom';
 
         let productName = document.createElement('h3');
+        productName.textContent = product.name;
         productName.textContent = product.name || 'Nom non disponible';
 
         let productPrice = document.createElement('p');
         productPrice.classList.add('price');
+        productPrice.textContent = `Prix : ${Number(product.price).toFixed(1)} €`;
         productPrice.textContent = `Prix : ${Number(product.price || 0).toFixed(1)} €`;
 
         let productStock = document.createElement('p');
@@ -128,5 +153,4 @@ function displayItem(iterable) {
         productCard.appendChild(actionsDiv);
         productGrid.appendChild(productCard);
     });
-
 }

@@ -15,13 +15,14 @@ class Product {
         $this->database = $database;
     }
 
-    // CREATE
-    public function create()
+    public function create(): bool
     {
+        if (empty($this->name) || $this->price < 0) {
+            return false; // Validation basique
+        }
         $sql = "INSERT INTO products (name, price, category, stock, image) VALUES (:name, :price, :category, :stock, :image)";
         $stmt = $this->database->connect()->prepare($sql);
 
-        // Plus lisible que de mettre tout dans le execute
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':price', $this->price);
         $stmt->bindParam(':category', $this->category);
@@ -30,7 +31,6 @@ class Product {
         return $stmt->execute();
     }
 
-    // READ (tous les produits)
     public function read(): array
     {
         $sql = "SELECT * FROM products";
@@ -39,7 +39,6 @@ class Product {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // READ (un produit)
     public function readSingle(int $id)
     {
         $sql = "SELECT * FROM products WHERE id_product = :id";
@@ -49,16 +48,13 @@ class Product {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-
-    // UPDATE
     public function update($data): void
     {
-        $sql = "UPDATE products SET name = :name, price = :price, category = :category, stock = :stock WHERE id_product = :id";
+        $sql = "UPDATE products SET name = :name, price = :price, category = :category, stock = :stock, image = :image WHERE id_product = :id";
         $stmt = $this->database->connect()->prepare($sql);
         $stmt->execute($data);
     }
 
-    // DELETE
     public function delete($id): bool
     {
         $sql = "DELETE FROM products WHERE id_product = :id";

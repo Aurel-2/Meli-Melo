@@ -1,17 +1,32 @@
+<?php
+// shopView.php
+use controllers\ProductController;
 
+require_once __DIR__ . '/../config/Database.php';
+require_once __DIR__ . '/../controllers/ProductController.php';
+
+session_start();
+$productController = new ProductController();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $productController->create();
+    header('Location: ../public/index.php?action=index');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catalogue de Produits</title>
-    <link href="shop.css" rel="stylesheet">
+    <link href="../public/shop.css" rel="stylesheet">
 </head>
 <body onload="init()">
 <h1>Gestion des Produits</h1>
 <div class="container">
     <div id="entry">
-        <form id="productForm" method="POST" action="shopView.php" enctype="multipart/form-data">
+        <form id="productForm" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="name">Nom du produit : </label>
                 <input type="text" id="name" name="name" value="" required>
@@ -26,7 +41,7 @@
             </div>
             <div class="form-group">
                 <label for="price">Prix : </label>
-                <input type="number" id="price" name="price" step="0.01" required>
+                <input type="number" id="price" name="price" step="0.01" min="0" required>
             </div>
             <div class="form-group checkbox-inline">
                 <label for="stock">Stock : </label>
@@ -53,7 +68,7 @@
     <div id="filter">
         <label for="cat-filter">Filtrer par catégorie</label>
         <select id="cat-filter" onchange="filterProducts()">
-            <option value="">Toutes les catégories</option>
+            <option value="all">Toutes les catégories</option>
         </select>
     </div>
     <div class="product-grid" id="product-grid"></div>
@@ -62,10 +77,6 @@
         <button type="button" onclick="resetDisplay()">Réinitialisation</button>
     </div>
 </div>
-
-<script type="text/javascript">
-    let catalog = <?php echo json_encode($products); ?>;
-</script>
-<script src="shop.js"></script>
+<script src="../public/shop.js"></script>
 </body>
 </html>
