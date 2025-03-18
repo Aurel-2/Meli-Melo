@@ -2,15 +2,18 @@
 session_start();
 global $database;
 
-use controllers\ProductController;
 use controllers\LoginController;
+use controllers\QuizController;
+use models\Quiz;
 
-require_once __DIR__ . '/../config/Database.php';
-require_once __DIR__ . '/../controllers/ProductController.php';
-require_once __DIR__ . '/../controllers/LoginController.php';
+require_once '../config/database.php';
+require_once '../models/Quiz.php';
+require_once '../controllers/QuizController.php';
+require_once '../controllers/LoginController.php';
 
-$productController = new ProductController();
-$loginController = new LoginController();
+$quizModel = new Quiz($database);
+$quizController = new QuizController($database);
+$loginController = new LoginController($database);
 $message = "";
 
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
@@ -30,24 +33,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 break;
 
-            case 'add_product':
-                $productController->create();
-                $message = "<h4 style='color: green'>Produit ajouté avec succès</h4>";
-                header('Location: ../public/index.php?action=index');
+            case 'add_question':
+                $quizController->saveQuizQuestion();
+                $message = "<h4 style='color: green'>Ajout de la question réussi.</h4>";
+                header("Location: QuizView.php");
                 exit;
+
+            case 'submit_quiz':
+                $questions = $quizModel->getQuizQuestions();
+                $score = 0;
+                $total_questions = count($questions);
+                $feedback = [];
+
+                foreach ($questions as $key => $question) {
+                    if (isset($_POST['question' . $key])) {
+                        $user_answer = (int)$_POST['question' . $key];
+                        $correct_answer = (int)$question['answer'];
+                        if ($user_answer === $correct_answer) {
+                            $score++;
+                            $feedback[$key] = "<h4 style='color: green'>" . $question['options'][$correct_answer] . " est correct!</h4>";
+                        } else {
+                            $feedback[$key] = "<h4 style='color: red'>Incorrect. La bonne réponse était : " . $question['options'][$correct_answer] . "</h4>";
+                        }
+                    }
+                }
+                break;
         }
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Produits</title>
-    <link href="../public/shop.css" rel="stylesheet">
+    <title>Quiz</title>
+    <link href="../public/quiz.css" rel="stylesheet">
 </head>
-<body onload="init()">
+<body>
 <?php if (!$loginController->isConnected()): ?>
     <!-- Formulaire de connexion -->
     <form method="POST">
@@ -59,43 +83,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php echo $message; ?>
     </form>
 <?php else: ?>
-    <!-- Formulaire d'ajout de produit -->
+
+    <!-- Formulaire d'ajout de question -->
     <form method="POST">
+        <!-- Bouton de déconnexion en haut à droite -->
         <div class="logout-container">
-            <h1>Ajouter un produit</h1>
+            <h1>Ajouter une question</h1>
             <a href="?action=logout">Déconnexion</a>
         </div>
-        <input type="hidden" name="form_type" value="add_product">
-        <input type="text" name="name" placeholder="Nom du produit" required>
-        <input type="text" name="category" placeholder="Catégorie" required>
-        <input type="file" name="Image" accept=".jpg, .jpeg, .png">
-        <input type="number" name="price" step="0.01" min="0" placeholder="Prix (€)" required><br>
-        <input type="checkbox" name="stock" id="stock">
-        <label for="stock">En stock</label><br>
-        <button type="submit">Ajouter le produit</button>
+        <input type="hidden" name="form_type" value="add_question">
+
+        <h3>Veuillez saisir une question</h3>
+        <input type="text" name="question" placeholder="Question">
+        <div id="options-container">
+            <h3>Options</h3>
+            <div class="option-item">
+                <input type="text" name="options[]" placeholder="Option">
+                <input type="checkbox" name="answer[]" value="0">
+                <label>Bonne réponse</label>
+            </div>
+            <div class="option-item">
+                <input type="text" name="options[]" placeholder="Option">
+                <input type="checkbox" name="answer[]" value="1">
+                <label>Bonne réponse</label>
+            </div>
+        </div>
+        <button type="button" onclick="add_options()">Ajouter une option</button>
+        <button type="submit">Ajouter la question</button>
+        <div id="error-container" class="error-container"></div>
         <?php echo $message; ?>
     </form>
 <?php endif; ?>
 
-<!-- Affichage des produits (toujours visible) -->
+<!-- Formulaire du quiz -->
 <form method="POST">
-    <h1>Catalogue des produits</h1>
-    <div id="search">
-        <input type="text" id="search-products" onkeyup="searchProducts()" placeholder="Rechercher par nom...">
-    </div>
-    <div id="filter">
-        <select id="cat-filter" onchange="filterProducts()">
-            <option value="all">Toutes les catégories</option>
-        </select>
-    </div>
-    <div class="product-grid" id="product-grid"></div>
-    <?php if ($loginController->isConnected()): ?>
-        <button type="button" onclick="totalPrice()">Calculer le prix total</button>
-        <button type="button" onclick="applyDiscount()">Réduction de 10%</button>
-        <button type="button" onclick="resetDisplay()">Réinitialiser</button>
-    <?php endif; ?>
+    <input type="hidden" name="form_type" value="submit_quiz">
+    <h1>Quiz</h1>
+    <?php
+    $questions = $quizModel->getQuizQuestions();
+    foreach ($questions as $key => $value) {
+        echo "<h2>" . ($key + 1) . ". " . htmlspecialchars($value["question"]) . "</h2>";
+        foreach ($value["options"] as $index => $option) {
+            echo "<input type='radio' name='question" . $key . "' value='$index' required> " . htmlspecialchars($option) . "<br>";
+        }
+        if (isset($feedback[$key])) {
+            echo $feedback[$key];
+        }
+    }
+    if (!empty($questions)) {
+        echo "<button type='submit'>Soumettre le quiz</button>";
+    }
+    ?>
 </form>
 
-<script src="../public/shop.js"></script>
+<?php
+if (isset($score)) {
+    echo "<p style='color: blue; text-align: center; font-weight: bold'>Score : $score / $total_questions</p>";
+}
+?>
+
+<script src="../public/quiz.js"></script>
 </body>
 </html>

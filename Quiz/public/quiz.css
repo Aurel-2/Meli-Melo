@@ -27,7 +27,7 @@ form, p {
     margin: 20px auto 0 auto;
 }
 
-
+/* Bouton de déconnexion (carré rouge avec icône) */
 #logoutbtn {
     background-color: #ff4d4d;
     width: 30px;
