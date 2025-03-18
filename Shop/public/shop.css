@@ -7,8 +7,8 @@
     --text-color: #2d3436;
     --border-color: #e0e6ed;
     --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    --shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.1);
-    --spacing: 10px;
+    --shadow-hover: 0 15px 20px rgba(0, 0, 0, 0.1);
+    --spacing: 15px;
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -47,9 +47,7 @@ h1 {
     transition: var(--transition);
 }
 
-.container:hover {
-    box-shadow: var(--shadow-hover);
-}
+
 
 #entry {
     display: flex;
@@ -207,6 +205,8 @@ button:active::after {
     padding: var(--spacing);
     box-shadow: var(--shadow);
     transition: var(--transition);
+    margin: var(--spacing);
+    border: 2px solid var(--secondary-color);
     text-align: center;
     align-content: center;
     justify-content: center;
@@ -332,4 +332,44 @@ input[type="file"]:hover::-webkit-file-upload-button {
 
 .edit-link:hover, .delete-link:hover {
     opacity: 0.9;
+}
+
+a {
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 2px 3px;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+
+}
+
+a:hover {
+    text-decoration: none;
+    background-color: darkred;
+}
+
+.logout-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+p {
+    color : red;
+    font-weight: bold;
+}
+
+.second-container
+{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    max-width: 1000px;
+    margin: 0 auto var(--spacing) auto;
+    padding: var(--spacing);
 }

@@ -12,17 +12,6 @@ async function init() {
         let errorDiv = document.createElement('div');
         errorDiv.style.color = 'red';
         form.appendChild(errorDiv);
-
-        let imgInput = document.getElementById("image");
-        let imgElement = document.getElementById("img-src");
-
-        imgInput.addEventListener('change', (event) => {
-            let file = event.target.files[0];
-            if (file) {
-                imgElement.src = URL.createObjectURL(file);
-            }
-        });
-
         form.addEventListener('submit', async (event) => {
             const response = await fetch('../public/index.php?action=api-get');
             if (!response.ok) {
@@ -36,6 +25,15 @@ async function init() {
     } catch (error) {
         console.error('Erreur lors de l\'initialisation :', error);
     }
+
+    let imgInput = document.getElementById("image");
+    let imgElement = document.getElementById("img-src");
+    imgInput.addEventListener('change', (event) => {
+        let file = event.target.files[0];
+        if (file) {
+            imgElement.src = URL.createObjectURL(file);
+        }
+        });
 }
 
 
@@ -129,7 +127,7 @@ function displayItem(iterable) {
         actionsDiv.classList.add('actions');
         console.log(product);
         let editLink = document.createElement('a');
-        editLink.href = `?action=edit&id=${product.id_product}`;
+        editLink.href = `?action=update&id=${product.id_product}`;
         editLink.textContent = 'Modifier';
         editLink.classList.add('edit-link');
 

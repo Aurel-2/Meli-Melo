@@ -41,7 +41,7 @@ class LoginController
     {
         $_SESSION = array();
         session_destroy();
-        header("Location: ../views/index.php");
+        header("Location: ../public/index.php");
         exit();
     }
 

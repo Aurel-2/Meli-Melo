@@ -46,32 +46,30 @@ class ProductController {
     }
 
     public function update($id): void {
-
-        $this->product->name = $_POST['name'] ?? '';
-        $this->product->price = $_POST['price'] ?? 0;
-        $this->product->category = $_POST['category'] ?? '';
-        $this->product->stock = isset($_POST['stock']) ? 1 : 0;
-
-        $existingProduct = $this->product->readSingle($id);
-        $this->product->image = $existingProduct['image'] ?? "../images/default.jpg";
-
-        if (isset($_FILES["Image"]) && $_FILES["Image"]["error"] == 0) {
-            $target_dir = "../images/";
-            $target_file = $target_dir . basename($_FILES["Image"]["name"]);
-            if (move_uploaded_file($_FILES["Image"]["tmp_name"], $target_file)) {
-                $this->product->image = $target_file;
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $imagePath = "../images/default.jpg";
+            if (isset($_FILES["Image"]) && $_FILES["Image"]["error"] == 0) {
+                $target_dir = "../images/";
+                $target_file = $target_dir . basename($_FILES["Image"]["name"]);
+                if (move_uploaded_file($_FILES["Image"]["tmp_name"], $target_file)) {
+                    $imagePath = $target_file;
+                }
             }
+            $product = [
+                "id" => $id,
+                "name" => $_POST['name'],
+                "price" => $_POST['price'],
+                "category" => $_POST['category'],
+                "stock" => $_POST['stock'],
+                "image" => $imagePath
+            ];
+
+            $this->product->update($product);
+            header("Location: ../public/index.php?action=index");
+            exit();
         }
-        $data = [
-            ':id' => $id,
-            ':name' => $this->product->name,
-            ':price' => $this->product->price,
-            ':category' => $this->product->category,
-            ':stock' => $this->product->stock,
-            ':image' => $this->product->image
-        ];
-        $this->product->update($data);
-        header("Location: ../public/index.php?action=index");
+        $data = $this->product->readSingle($id);
+        require(__DIR__ . "/../views/updateView.php");
     }
 
     public function delete($id): void
