@@ -60,7 +60,7 @@ class ProductController {
                 "name" => $_POST['name'],
                 "price" => $_POST['price'],
                 "category" => $_POST['category'],
-                "stock" => $_POST['stock'],
+                "stock" => isset($_POST['stock']) ? 1 : 0,
                 "image" => $imagePath
             ];
 

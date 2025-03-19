@@ -1,0 +1,177 @@
+/* Existing styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0 0;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+}
+
+form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+form div {
+    grid-column: span 2;
+}
+
+span {
+    margin-right: 50px;
+}
+
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+input[type="text"], input[type="number"], input[type="date"], input[type="submit"], input[type="password"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input[type="submit"], .btnf {
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    grid-column: span 2;
+}
+
+input[type="submit"]:hover, .btnf:hover {
+    background-color: #0056b3;
+}
+
+#search {
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+}
+
+#search label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+#search input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+#results {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+}
+
+.medical-file {
+    background-color: #e9ecef;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.medical-file h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+.medical-file ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.medical-file li {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Styles for the login form */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.login-form h2 {
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.login-form .form-group {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.login-form label {
+    font-weight: bold;
+    color: #333;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.login-form input[type="text"], .login-form input[type="password"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.login-form .login-btn {
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+    font-size: 16px;
+    border-radius: 4px;
+}
+
+.login-form .login-btn:hover {
+    background-color: #0056b3;
+}

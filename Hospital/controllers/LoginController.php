@@ -44,4 +44,5 @@ class LoginController
         header("Location: ../public/index.php?action=index");
         exit();
     }
+
 }

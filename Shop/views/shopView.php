@@ -1,25 +1,7 @@
 <?php
-use controllers\ProductController;
-use controllers\LoginController;
-require_once __DIR__ . '/../config/Database.php';
-require_once __DIR__ . '/../controllers/ProductController.php';
-require_once __DIR__ . '/../controllers/LoginController.php';
-
-$productController = new ProductController();
-$loginController = new LoginController();
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['form_type']) && $_POST['form_type'] === 'login') {
-        $loginController->login($_POST['username'], $_POST['password']);
-        header('Location: ../public/index.php');
-        exit;
-    } else {
-        $productController->create();
-        header('Location: ../public/index.php?action=index');
-        exit;
-    }
-}
+global $loginController
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -34,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div id="entry">
         <?php if (!$loginController->isConnected()): ?>
             <!-- Formulaire de connexion -->
-            <form method="POST" class="login-form">
+            <form method="POST" class="login-form" action="?action=login">
                 <input type="hidden" name="form_type" value="login">
                 <h2>Connexion</h2>
                 <div class="form-group">
@@ -51,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
         <?php else: ?>
 
-            <form id="productForm" method="POST" enctype="multipart/form-data">
+        <form id="productForm" method="POST" enctype="multipart/form-data" action="?action=create">
                 <div class="logout-container">
                     <p>Connecté en tant que: <?php echo htmlspecialchars($_SESSION['username']); ?></p>
                     <a href="?action=logout">Déconnexion</a>

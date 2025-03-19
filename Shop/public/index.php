@@ -20,7 +20,7 @@ $action = $_GET['action'] ?? 'index';
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 
-$allowedActions = ['index', 'api-get', 'create', 'update', 'delete'];
+$allowedActions = ['index', 'api-get', 'create', 'update', 'delete', 'login', 'logout'];
 
 if (!in_array($action, $allowedActions)) {
     $action = 'index';
@@ -42,6 +42,10 @@ switch ($action) {
         break;
     case 'delete':
         $controller->delete($id);
+        break;
+    case 'login':
+        $loginController->login($_POST['username'], $_POST['password']);
+        include __DIR__ . '/../views/shopView.php';
         break;
 
 }

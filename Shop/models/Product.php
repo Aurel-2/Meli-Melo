@@ -17,9 +17,6 @@ class Product {
 
     public function create(): bool
     {
-        if (empty($this->name) || $this->price < 0) {
-            return false; // Validation basique
-        }
         $sql = "INSERT INTO products (name, price, category, stock, image) VALUES (:name, :price, :category, :stock, :image)";
         $stmt = $this->database->connect()->prepare($sql);
 
