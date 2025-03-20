@@ -18,14 +18,8 @@ class QuizController
         $question = htmlspecialchars($_POST['question']);
         $options = $_POST['options'];
         $answer = $_POST['answer'];
-        $index = "";
-        foreach ($answer as $key => $value) {
-            if ($value == "on") {
-                $index = $key;
-                break;
-            }
-
-        }
-        $this->quizModel->addQuestionToQuiz($question, $options, $index);
+        $answer = $answer[0];
+        $this->quizModel->addQuestionToQuiz($question, $options, $answer);
+        header('Location: ../views/QuizView.php');
     }
 }

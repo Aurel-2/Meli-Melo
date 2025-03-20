@@ -8,6 +8,7 @@ class Database {
     private string $db_name = "db_shop";
     private string $username = "root";
     private string $password = "";
+
     public PDO $database;
 
     public function connect(): ?PDO

@@ -23,10 +23,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
 $action = $_GET['action'] ?? 'index';
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-$allowedActions = ['index', 'api-get-patient', 'api-get-diagnostic', 'add-diagnostic', 'create', 'update', 'delete', 'login'];
+$allowedActions = ['index', 'api-get-patient', 'api-get-diagnostic', 'add-diagnostic', 'create', 'update', 'delete', 'login','logout'];
 
 if (!in_array($action, $allowedActions)) {
-    header("HTTP/1.0 401 Unauthorized"); // ocazou
+    $action = 'index';
 }
 
 switch ($action) {
@@ -42,6 +42,7 @@ switch ($action) {
         break;
     case 'create':
         $patientController->create();
+        $diagnosticController->create();
         break;
     case 'delete':
         $patientController->delete($id);

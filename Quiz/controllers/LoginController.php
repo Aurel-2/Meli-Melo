@@ -16,7 +16,6 @@ class LoginController
 
     public function login($username, $password): bool
     {
-        // Vérifiez les identifiants dans la base de données
         $sql = "SELECT * FROM users WHERE username = :username AND password = :password";
         $stmt = $this->database->prepare($sql);
         $stmt->execute([

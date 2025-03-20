@@ -30,6 +30,10 @@ global $loginController
     </form>
 <?php else: ?>
 <div class="container">
+        <div class="logout-container">
+            <p>Connecté en tant que: <?php echo htmlspecialchars($_SESSION['username']); ?></p>
+            <a href="?action=logout">Déconnexion</a>
+        </div>
         <form id="medical-form" method="post" action="../public/index.php?action=create">
             <div>
                 <label for="id">ID</label>

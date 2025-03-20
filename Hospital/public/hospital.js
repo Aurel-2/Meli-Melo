@@ -4,7 +4,7 @@ async function init() {
     let form = document.getElementById('medical-form');
 
     try {
-        const patientResponse = await fetch('../public/index.php?action=api-get-patient', {
+        const patientResponse = await fetch('?action=api-get-patient', {
             method: 'GET',
             headers: {'Content-Type': 'application/json'}
         });
@@ -42,7 +42,7 @@ async function init() {
 
 async function fetchPatientDiagnostics(patient) {
     try {
-        const response = await fetch(`../public/index.php?action=api-get-diagnostic&id=${patient.id_patient}`, {
+        const response = await fetch(`?action=api-get-diagnostic&id=${patient.id_patient}`, {
             method: 'GET',
             headers: {'Content-Type': 'application/json'}
         });
@@ -110,12 +110,15 @@ function displayMedicalFile(list) {
             </ul>
             <div>
                 <form method="post" action="../public/index.php?action=add-diagnostic">
-                    <h4>Ajouter un nouveau diagnostic</h4> <br>
-                    <input type="hidden" name="id" value="${medicalFile.id}">
+                    <h4>Ajouter un nouveau diagnostic</h4><br>
+                    <input type="hidden" name="id" value="${medicalFile.id}"> <br>
                     <input name="diag" type="text" placeholder="Ajout d'un diagnostic"><br>
                     <input name="date" type="date"> <br>
-                    <input type="submit" value="Ajouter un diagnostic"><br>
-                    <a href="../public/index.php?action=delete&&id=${medicalFile.id}">Supprimer</a>
+                    <div class="submit-diag">
+                        <input type="submit" value="Ajouter un diagnostic"><br>
+                        <a href="?action=delete&&id=${medicalFile.id}">Supprimer</a>
+                    </div>
+
                 </form>
             </div>
         `;

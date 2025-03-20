@@ -25,7 +25,6 @@ class Quiz
             $optionStmt = $this->database->prepare($optionSql);
             $optionStmt->execute([':question_id' => $questionID, ':option' => $option]);
         }
-
         $answerSql = "INSERT INTO answers(id_question, answer) VALUES (:question_id, :answer)";
         $answerStmt = $this->database->prepare($answerSql);
         $answerStmt->execute([':question_id' => $questionID, ':answer' => $answer]);

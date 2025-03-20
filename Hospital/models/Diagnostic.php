@@ -2,12 +2,14 @@
 
 namespace models;
 
+use Cassandra\Date;
 use config\Database;
+use PDO;
 
 class Diagnostic
 {
     public int $id_patient;
-    public $date;
+    public Date $date;
     public string $description;
     private Database $database;
 
@@ -32,7 +34,7 @@ class Diagnostic
         $stmt = $this->database->connect()->prepare($sql);
         $stmt->bindParam(':id_patient', $this->id_patient);
         $stmt->execute();
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // Fixed readSingle method
@@ -40,9 +42,9 @@ class Diagnostic
     {
         $sql = "SELECT * FROM diagnostics WHERE id_patient = :id_patient";
         $stmt = $this->database->connect()->prepare($sql);
-        $stmt->bindParam(':id_patient', $id, \PDO::PARAM_INT);
+        $stmt->bindParam(':id_patient', $id, PDO::PARAM_INT);
         $stmt->execute();
-        $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $results;
     }
 
@@ -50,7 +52,7 @@ class Diagnostic
     {
         $sql = "DELETE FROM diagnostics WHERE id_patient = :id";
         $stmt = $this->database->connect()->prepare($sql);
-        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
     }
 }
